@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Internship Offer Letter Generator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --navy: #1a2744;
+        --navy-mid: #243260;
+        --navy-light: #2e3f7a;
+        --cream: #faf8f3;
+        --cream-dk: #ede9dc;
+        --gold: #c8923a;
+        --gold-light: #f5e6cc;
+        --text: #1a1a1a;
+        --muted: #666;
+        --border: #d4cfc2;
+        --green: #15803d;
+        --green-bg: #f0fdf4;
+        --red: #dc2626;
+        --red-bg: #fff1f1;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: #eceae3;
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      /* ── Header ── */
+      header {
+        background: var(--navy);
+        color: white;
+        padding: 0.85rem 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        user-select: none;
+      }
+      header svg {
+        flex-shrink: 0;
+      }
+      header h1 {
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        flex: 1;
+      }
+      .hbadge {
+        background: var(--gold);
+        color: white;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 10px;
+        border-radius: 20px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      /* ── Layout ── */
+      .app {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        flex: 1;
+        min-height: calc(100vh - 56px);
+      }
+      /* ── Left panel ── */
+      .panel {
+        background: white;
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        max-height: calc(100vh - 56px);
+        position: sticky;
+        top: 0;
+      }
+      .sec {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .sec h2 {
+        font-size: 10.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      /* ── Upload ── */
+      .drop {
+        border: 2px dashed var(--border);
+        border-radius: 10px;
+        padding: 1.5rem 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.2s;
+        position: relative;
+        background: var(--cream);
+      }
+      .drop:hover,
+      .drop.over {
+        border-color: var(--gold);
+        background: var(--gold-light);
+      }
+      .drop input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .drop-icon {
+        font-size: 28px;
+        margin-bottom: 0.5rem;
+      }
+      .drop p {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .drop .hint {
+        font-size: 11px;
+        color: #aaa;
+        margin-top: 3px;
+      }
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        padding: 0.65rem 0.85rem;
+        border-radius: 8px;
+        margin-top: 0.75rem;
+      }
+      .status.loading {
+        background: #eff6ff;
+        color: #1d4ed8;
+      }
+      .status.ok {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+      .status.err {
+        background: var(--red-bg);
+        color: var(--red);
+      }
+      .spin {
+        width: 14px;
+        height: 14px;
+        border: 2px solid currentColor;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        flex-shrink: 0;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      /* ── Form ── */
+      .fg {
+        margin-bottom: 0.85rem;
+      }
+      .fg label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .fg input,
+      .fg select,
+      .fg textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        padding: 8px 11px;
+        font-size: 13px;
+        font-family: "DM Sans", sans-serif;
+        background: var(--cream);
+        color: var(--text);
+        transition: 0.15s;
+        line-height: 1.5;
+      }
+      .fg input:focus,
+      .fg select:focus,
+      .fg textarea:focus {
+        outline: none;
+        border-color: var(--gold);
+        background: white;
+      }
+      .fg textarea {
+        resize: vertical;
+        min-height: 54px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.7rem;
+      }
+      .auto-tag {
+        font-size: 9px;
+        background: #dcfce7;
+        color: #15803d;
+        padding: 1px 6px;
+        border-radius: 20px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        display: none;
+      }
+      /* ── Buttons ── */
+      .btns {
+        display: flex;
+        gap: 8px;
+        padding: 1.25rem 1.5rem;
+        background: var(--cream);
+        border-top: 1px solid var(--border);
+        position: sticky;
+        bottom: 0;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        font-family: "DM Sans", sans-serif;
+        cursor: pointer;
+        transition: 0.15s;
+        border: none;
+      }
+      .btn-primary {
+        background: var(--navy);
+        color: white;
+      }
+      .btn-primary:hover {
+        background: var(--navy-light);
+      }
+      .btn-gold {
+        background: var(--gold);
+        color: white;
+      }
+      .btn-gold:hover {
+        opacity: 0.9;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--navy);
+        border: 1px solid var(--border);
+      }
+      .btn-ghost:hover {
+        background: var(--cream-dk);
+      }
+      /* ── Right panel ── */
+      .preview-panel {
+        background: #dddad0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 2.5rem;
+        overflow-y: auto;
+      }
+      .preview-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        width: 100%;
+        max-width: 820px;
+      }
+      .preview-toolbar span {
+        font-size: 12.5px;
+        color: #666;
+        flex: 1;
+      }
+      /* ── LETTER ── */
+      .letter {
+        background: white;
+        width: 100%;
+        max-width: 820px;
+        min-height: 1130px;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.14);
+        font-family: "DM Sans", sans-serif;
+        font-size: 13.5px;
+        line-height: 1.75;
+        color: #1a1a1a;
+        position: relative;
+      }
+      .lh {
+        background: var(--navy);
+        color: white;
+        padding: 1.75rem 2.5rem;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .lh-left {
+        
+      }
+      .lh-co {
+        font-family: "Playfair Display", serif;
+        font-size: 21px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      .lh-tag {
+        font-size: 10px;
+        opacity: 0.65;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-top: 3px;
+      }
+      .lh-right {
+        text-align: right;
+        font-size: 11px;
+        opacity: 0.75;
+        flex-shrink: 0;
+      }
+      .lh-divider {
+        width: 1px;
+        background: rgba(255, 255, 255, 0.2);
+        align-self: stretch;
+      }
+      .lb {
+        padding: 2.25rem 2.5rem;
+      }
+      .l-date {
+        font-size: 12.5px;
+        color: var(--muted);
+        margin-bottom: 1.75rem;
+      }
+      .l-to {
+        margin-bottom: 1.75rem;
+        line-height: 1.55;
+      }
+      .l-to p {
+        margin: 0;
+        font-size: 13px;
+      }
+      .l-to .l-name {
+        font-weight: 500;
+        font-size: 14px;
+      }
+      .l-subj {
+        margin-bottom: 1.5rem;
+        font-size: 13.5px;
+      }
+      .l-subj span {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .offer-box {
+        border: 1px solid var(--cream-dk);
+        border-left: 4px solid var(--gold);
+        background: var(--cream);
+        border-radius: 0 8px 8px 0;
+        padding: 1.1rem 1.4rem;
+        margin: 1.4rem 0;
+      }
+      .offer-box table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .offer-box td {
+        padding: 4.5px 0;
+        font-size: 13px;
+        vertical-align: top;
+      }
+      .offer-box td:first-child {
+        color: var(--muted);
+        width: 38%;
+        font-weight: 500;
+        font-size: 12.5px;
+        padding-right: 12px;
+      }
+      .unpaid {
+        color: var(--red);
+        font-weight: 500;
+      }
+      .lf {
+        border-top: 1px solid var(--cream-dk);
+        padding: 1.4rem 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-top: 2.5rem;
+      }
+      .sig-line {
+        border-top: 1px solid #333;
+        min-width: 200px;
+        padding-top: 6px;
+      }
+      .sig-name {
+        font-weight: 500;
+        font-size: 13.5px;
+      }
+      .sig-desig {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .aicte-foot {
+        text-align: right;
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      /* ── Print ── */
+     /* ── Print ── */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    background: white !important;
+
+    /* Prevent browser header/footer */
+    margin: 0;
+
+    /* Force color printing */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .app {
+    display: block;
+  }
+
+  .panel,
+  header,
+  .preview-toolbar {
+    display: none !important;
+  }
+
+  .preview-panel {
+    padding: 0;
+    background: white;
+  }
+
+  .letter {
+    box-shadow: none;
+    max-width: 100%;
+    min-height: unset;
+  }
+
+  /* Force header colors */
+  .lh {
+    background: #1a2744 !important;
+    color: white !important;
+  }
+
+  .offer-box {
+    background: #faf8f3 !important;
+  }
+}
+    </style>
+  </head>
+  <body>
+    <header>
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="6" fill="rgba(255,255,255,.15)" />
+        <path
+          d="M7 9.5h12M7 13h8M7 16.5h10"
+          stroke="white"
+          stroke-width="1.6"
+          stroke-linecap="round"
+        />
+      </svg>
+      <h1>Internship Offer Letter Generator</h1>
+      <span class="hbadge">AICTE Approved</span>
+    </header>
+
+    <div class="app">
+      <!-- ─── LEFT PANEL ─── -->
+      <div class="panel">
+        <!-- Upload -->
+        <div class="sec">
+          <h2>📄 Upload Certificate PDF</h2>
+          <div class="drop" id="drop">
+            <input type="file" id="pdfInput" accept=".pdf" />
+            <div class="drop-icon">📋</div>
+            <p>Drop your certificate here or click to browse</p>
+            <p class="hint">Fields are auto-extracted from the PDF</p>
+          </div>
+          <div class="status" id="status" style="display: none"></div>
+        </div>
+
+        <!-- Intern -->
+        <div class="sec">
+          <h2>👤 Intern Details</h2>
+          <div class="fg">
+            <label
+              >Full Name <span class="auto-tag" id="t-name">AUTO</span></label
+            >
+            <input id="f-name" type="text" placeholder="e.g. Harsh Anand" />
+          </div>
+          <div class="fg">
+            <label>Address / City</label>
+            <textarea
+              id="f-addr"
+              placeholder="e.g. 456 MG Road, Patna, Bihar – 800001"
+            ></textarea>
+          </div>
+          <div class="fg">
+            <label
+              >Email
+              <span
+                style="
+                  font-size: 10px;
+                  font-weight: 400;
+                  text-transform: none;
+                  letter-spacing: 0;
+                "
+                >(optional)</span
+              ></label
+            >
+            <input id="f-email" type="email" placeholder="intern@example.com" />
+          </div>
+        </div>
+
+        <!-- Internship -->
+        <div class="sec">
+          <h2>💼 Internship Details</h2>
+          <div class="fg">
+            <label
+              >Company Name <span class="auto-tag" id="t-co">AUTO</span></label
+            >
+            <input
+              id="f-co"
+              type="text"
+              placeholder="e.g. Codec Technologies Pvt. Ltd."
+            />
+          </div>
+          <div class="fg">
+            <label>Company Address</label>
+            <textarea
+              id="f-co-addr"
+              placeholder="e.g. 4th Floor, Tech Park, New Delhi – 110001"
+            ></textarea>
+          </div>
+          <div class="fg">
+            <label
+              >Role / Position
+              <span class="auto-tag" id="t-role">AUTO</span></label
+            >
+            <input
+              id="f-role"
+              type="text"
+              placeholder="e.g. Web Developer Intern"
+            />
+          </div>
+          <div class="row">
+            <div class="fg">
+              <label
+                >Start Date <span class="auto-tag" id="t-s">AUTO</span></label
+              >
+              <input id="f-start" type="text" placeholder="02/02/2026" />
+            </div>
+            <div class="fg">
+              <label
+                >End Date <span class="auto-tag" id="t-e">AUTO</span></label
+              >
+              <input id="f-end" type="text" placeholder="30/04/2026" />
+            </div>
+          </div>
+          <div class="fg">
+            <label>Working Hours</label>
+            <input
+              id="f-hours"
+              type="text"
+              value="Monday – Friday, 10:00 AM – 6:00 PM"
+            />
+          </div>
+          <div class="row">
+            <div class="fg">
+              <label>Mode</label>
+              <select id="f-mode">
+                <option>Remote</option>
+                <option>On-Site</option>
+                <option>Hybrid</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Notice Period</label>
+              <select id="f-notice">
+                <option>7 days</option>
+                <option>14 days</option>
+                <option>30 days</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Signatory -->
+        <div class="sec">
+          <h2>🖊 Signatory / HR Details</h2>
+          <div class="fg">
+            <label
+              >Issuing Authority
+              <span class="auto-tag" id="t-hr">AUTO</span></label
+            >
+            <input
+              id="f-hr"
+              type="text"
+              placeholder="e.g. Dr. Anurag Shrivastava"
+            />
+          </div>
+          <div class="fg">
+            <label>Designation</label>
+            <input id="f-desig" type="text" value="Program Manager" />
+          </div>
+          <div class="fg">
+            <label
+              >AICTE ID <span class="auto-tag" id="t-aicte">AUTO</span></label
+            >
+            <input id="f-aicte" type="text" placeholder="CORPORATE6759…" />
+          </div>
+          <div class="fg">
+            <label>Offer Letter Date</label>
+            <input id="f-date" type="date" />
+          </div>
+        </div>
+
+        <div class="btns">
+          <button class="btn btn-primary" onclick="render()">
+            ⚡ Generate Letter
+          </button>
+          <button class="btn btn-gold" onclick="window.print()">
+            🖨 Print / Save PDF
+          </button>
+          <button class="btn btn-ghost" onclick="resetForm()">↺</button>
+        </div>
+      </div>
+
+      <!-- ─── RIGHT PANEL ─── -->
+      <div class="preview-panel">
+        <div class="preview-toolbar">
+          <span>📄 Live Preview — edits update instantly</span>
+          <button class="btn btn-gold" onclick="window.print()">
+            🖨 Print / Export PDF
+          </button>
+        </div>
+
+        <div class="letter" id="letter">
+          <!-- Letter Header -->
+          <div class="lh">
+            <div class="lh-left">
+              <img
+               src="./logo.jpg"
+                alt="Codec Technologies"
+                style="
+                  height: 48px;
+                  object-fit: contain;
+                  margin-bottom: 6px;
+                  display: block;
+                "
+              />
+              <div class="lh-co" id="l-co" style="display: none">
+                Codec Technologies Pvt. Ltd.
+              </div>
+              <div class="lh-tag">
+                AICTE &amp; ICAC Approved Internship Program
+              </div>
+            </div>
+            <div class="lh-divider"></div>
+            <div class="lh-right">
+              <div>Ref: INTERN/2026/<span id="l-ref">—</span></div>
+              <div
+                id="l-aicte-h"
+                style="margin-top: 4px; font-size: 10px; opacity: 0.6"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Letter Body -->
+          <div class="lb">
+            <div class="l-date" id="l-date">Date: —</div>
+
+            <div class="l-to">
+              <p class="l-name" id="l-name">[ Intern Name ]</p>
+              <p id="l-addr" style="color: var(--muted); font-size: 12.5px"></p>
+              <p
+                id="l-email"
+                style="color: var(--muted); font-size: 12.5px"
+              ></p>
+            </div>
+
+            <div class="l-subj">
+              <strong>Subject:</strong>
+              <span
+                >Offer Letter for Internship —
+                <span id="l-role-s">[ Role ]</span></span
+              >
+            </div>
+
+            <p>Dear <strong id="l-name2">[ Intern Name ]</strong>,</p>
+            <br />
+            <p>
+              We are pleased to offer you an internship position at
+              <strong id="l-co2">[ Company ]</strong> as a
+              <strong id="l-role2">[ Role ]</strong>, as part of our AICTE &amp;
+              ICAC Approved Internship Program. After reviewing your profile and
+              demonstrated interest, we believe you will make a valuable
+              contribution to our team.
+            </p>
+            <br />
+            <p>The details of your internship are outlined below:</p>
+
+            <div class="offer-box">
+              <table>
+                <tr>
+                  <td>Position</td>
+                  <td><strong id="l-role3">[ Role ]</strong></td>
+                </tr>
+                <tr>
+                  <td>Organization</td>
+                  <td id="l-co3">[ Company ]</td>
+                </tr>
+                <tr>
+                  <td>Internship Period</td>
+                  <td>
+                    <span id="l-s">—</span> &nbsp;to&nbsp;
+                    <span id="l-e">—</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Stipend</td>
+                  <td>
+                    <span class="unpaid">Unpaid — No stipend applicable</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Mode of Work</td>
+                  <td id="l-mode">Remote</td>
+                </tr>
+                <tr>
+                  <td>Working Hours</td>
+                  <td id="l-hours">Monday – Friday, 10:00 AM – 6:00 PM</td>
+                </tr>
+                <tr>
+                  <td>Notice Period</td>
+                  <td id="l-notice">7 days</td>
+                </tr>
+                <tr>
+                  <td>Reporting To</td>
+                  <td id="l-hr-t">[ Issuing Authority ]</td>
+                </tr>
+              </table>
+            </div>
+
+            <p>
+              During this internship, you will be engaged in hands-on work
+              within the domain of <strong id="l-domain">[ domain ]</strong> and
+              shall have the opportunity to apply and enhance your technical
+              knowledge in a professional environment. You are expected to
+              maintain punctuality, confidentiality, and professional conduct
+              throughout the duration of your internship.
+            </p>
+            <br />
+            <p>
+              Please note that this is an <strong>unpaid internship</strong> and
+              does not constitute an offer of employment. Either party may
+              terminate this internship agreement by providing a written notice
+              of <span id="l-notice2">7 days</span>.
+            </p>
+            <br />
+            <p>
+              Upon successful completion, you will be awarded an Internship
+              Completion Certificate duly approved by AICTE and ICAC, which
+              shall be a testament to your hard work and dedication.
+            </p>
+            <br />
+            <p>
+              We look forward to your enthusiastic participation and
+              contribution to the program. Kindly confirm your acceptance by
+              signing and returning a copy of this letter at your earliest
+              convenience.
+            </p>
+            <br />
+            <p>
+              Congratulations, and a warm welcome to
+              <strong id="l-co4">[ Company ]</strong>!
+            </p>
+          </div>
+
+          <!-- Footer / Signature -->
+          <div class="lf">
+            <div>
+              <div
+                style="
+                  font-size: 12px;
+                  color: var(--muted);
+                  margin-bottom: 2.5rem;
+                "
+              >
+                For <span id="l-co5">[ Company ]</span>
+              </div>
+              <img style="width:150px; margin-top:3rem; height:40px;" src="./image.png"/>
+              <div class="sig-line">
+                <div class="sig-name" id="l-hr-s">[ Issuing Authority ]</div>
+                <div class="sig-desig" id="l-desig-s">Program Manager</div>
+                <div class="sig-desig" id="l-co6">[ Company ]</div>
+              </div>
+            </div>
+            <div class="aicte-foot">
+              <div style="font-weight: 500">AICTE Approved Internship</div>
+              <div id="l-aicte-f"></div>
+              <img
+                src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACCAZADASIAAhEBAxEB/8QAHAABAQACAwEBAAAAAAAAAAAAAAECBgMFBwQI/8QAQhAAAQMDAwMCBAMEBwUJAAAAAQACAwQFEQYSIQcxQRNRFCJhgRUycQgjkaEWQlJicpKxFyTB0dIzNDU2U1WCs/H/xAAbAQEBAAIDAQAAAAAAAAAAAAAAAQIGAwQFB//EAC8RAAIBAwIEBAUEAwAAAAAAAAABAgMEEQUhEjFBUQZhobFxgZHB0RMiI/AyQoL/2gAMAwEAAhEDEQA/AP1wqSopnldYyMgqoFUYCIigCYRMoAAqoCqgCIiAoGUwoqO6AhVAVIUJwgKigPCZQDKiIEARXCEIC5yigVQBERAEREAREQBEUKoGUKiKgIiIAioUKAIiKMBHeyIeUBBnKqYRMgIiKgIiIAiIowYIiIAO6yPdYqjsjBURFAEREAQIqOyAIiIAiIgLkqHlFR2QEWXHsixQBUd1EQGShURAUKqBMhAVERAERFQTKZURUFJWOSiIBlUKIEBUUJwqDwgCJlQk5QFRAUUAREUAREQBERVAIiKgjuyrOe6h7qN7qAiIiAFMIVR2QAKoigCLpdTapsGm4g+8XKGmc4ZZFndI/wDRg5I+vZaFcOt1ljeW0Nor6gZ4e/awH7ZyuCpc0qbxKW56dnot/ex46FJtd+S+rwj1cK5Xj9N1xoN3+82Gra33ZIzj+JW4aW6j6U1DPHS01f8AC1khwynqh6b3n2bnhx78A54Uhd0ZvEZfb3OS50DUraLnUovC7b+2TcEUb+qq7B5AREQBUFRaNq7Vd5l1O3R2jKWmqLu2ITV1XUk/D0EZ7bgOXPcOQ36jPCqWSG9HKn3Xncth6o0TH1dJragudQxvFLV2/wBOGT6AsOW/Q/N9VvFokr5rXTS3Smipa18YM8MUnqMjfjlodgZx74VaB9iceFAchUcLEoRTcPceyZVBkFMYUDh4wtL1tqO42zXmj7TRyRiluc8zKppbkua1oxg545P1VSbBuqoKxJAIHv2QHIyFMApKZXxXuuFttFZcCz1Ph4Xy7AfzbRnC1bpcdSXO0Uep77e2zi60bKllBDEGQ0weA9oaeXEhpAJJx9FklsQ3bKZWP/4hIHc4UKUlFFpfVy8Xu0WyyssNXBSVVfd46N0s0Pqtax0UriduRnBYD38KpZeAbqgWjQ2TqWKmJ8+ubVJG2RpkYLDt3NDgXAET8EjIBwcZ7Hst47AZKNEL3Ranra93C16k0lR0UkbYblc309U1zMlzBBI/g54Ic0LbTjOMpgpEwnGcZ5V4zjPPfCgJhMK5TP6LEDKLXdb6pp9K0tBUVFJPUisro6NoiIywvzhxz4GP1XJrWl1LV0VKzTF0o7dUsq43zvqYi9r4R+ZoA8lXAO+TKmVAR4IKgMkTI9whKqATKmUVAKAZRAcKAxREQBUKIqDJeWdXupjrBM+w2B0b7oAPiJ3AObSgjIAHZzyCDg9hgnuAd41pcqu16brKm3RNmr/TLaWMkfNIRx+uO+PPZfk6qdM+oldUOkfO6QuldJ+dzySXF31JOV42oX6hJ0Kb/djL7pPl9TdPCOh0r2crmvvGPKPd935L1fwaMqupqayrkq6yeSpqJTukmleXPefckrhJDRzwFufS/QNbrCtdPK91LZ6d22afHzSu/wDTj+vu7x2GSeP0BYNI6csUDIrdaKWMtH/aOYHSO+pceSulbWNSuuLOF7m3av4ntNNn+ilxSXRbJfF/bDPyWXAYGcI4B7XMe1rmngg8g/qv2HcLRa7hCYa63UtRGRgtkiBXn9d0Z07UajgroppYbYCXT27GWSO8AOzkN75bznjsMg81TS6sccLT9Do2fjezqZ/Wi4Y/6z5clv2zt3aOP9nyt1XXWWaS6SOmszCGUM1RkzPIzuAPdzBxgn9BwvUsrGCKKCFkMMbI4o2hrGMGA0DsAPAWa9mhTdKmoN5wfOdTvI3t1OvGCipPkv7zfXzBz4QfVPBWJXMdEyXnHSTDNZdQIqvAuX4w18mT8xhMY9L7Y/1C9FC03WOkK2rvsWqtLXJlq1BFD6EhezdBWxA5EczRzx4cOW/UZCq7EOz1LLrJlWwadorNPTlvzmsq3xODuOwbG7I7+VptR1C1BQWTXMlzttvZX6cihbEaaZ00Mk0rNwBy1pw3dHkfXC7CeTq7WxuomU+l7WSNrq4TyzFo8ubHsGT7AkBdlYNAWm36Hr9L1k1RcW3QSvudXM799UyyD55CfDu2PbA9llsuYOrsXTW21lggqtQ191uF9qomyzXH46RkkcjgCfS2kBjR4DQAtcbrHUlNoGusP4iZr9SX1mn23V7Wlxa52RORgN9QRgjsAXAHtwtktlN1PsdpgsFM2wXgU8Qhp7rUzvhfsAw10sTWEF4GM7SAcZ4zhZwdNacaAn0/Pc5n3OpqvxCW6BgEnxm4OEob2wCMBnbbwSeSbnuCV/TK009kkkt9yvNLeoYzIy7ivldUGQDO5+5xDgT3aRt8YwuiOrb7qzQui6OnqzbLhqOukoq6rpuDGyASmd0f9lzvRIb3xu+i72tj6qV1ufZizTlFJJH6Ul2imlcQCMF7IS0Yd9C7A9zhZ3jQtFQ6JsdlsVzZbK2xzxzWurqMO3VHIO8ZG71C9wcB33nHOET7g67XWhaGxaFvFw0zW3O21tNb5nySNr5HfEMDCXh+53LtoO1/DmnBB7rpa2SR966PSSzPmkfThzpHuLnOJijJJJ5J+p5XZdRpNd1fT2+NvgsdloIKCZ9VNTVD55Kjaw7Y27mtDGudtBccnGQBzkfVQaUuVzg6a3WB1PFDZqRj6pkryHkOiZgNAacnI8kYVztuDXKq7wai1pqGXUNl1XerfQ1zrfRUVtge6kjEXD3v2OG6Rz8nnO1objGTnvul1Zc6bWtfaaW16op9MTUgnpvxmB4NNO0gOjY9xJ2FpyGk8beMBdvPYtUac1HdLtpP8Pr6C7SioqrbWSuhMdRgNdJHI1ruHADLSO4yDyV2+kafV5ra24aor6FrJgxtNbqJm6OnAzlxlcA57nZ54AGOB5RvYHB1Us9NdtH1zqmWsZ8NTySMbBUvia47cfOGkB4+jshaNRAaK6Hw6rsr6w3SttFIGierfJDHLI0Yc2N5LW4L+wA8ey9T1LRS3LT9fb6d0bZaiB0bC8kNBI4zgHhdHFo+Ou6U0ei725uW2uGjnkgdkNeyNrdzCQOxGQSB+iiewOtp+ltp/CWx110vVReywF93bXyMqBLjlzCDhozyG4x4x3WkXvUWo7loXTkT7tJBe6TVn4VPXRZYyV8UkkXqOaDy04Di08Hyt2A6r09sFoiGm6qpbH6TLxLLK3PGBI6AN/P52h2CfIXx1vTaop9LaZs1qrIqiS2XhlxrqmrcWvqXEvdK/gH53OdnBwPr71PfcG16T0jbdN1NZV0tRcKqrrQz4qorKl0z5S0uIJz25e7gYGMAcAAa312FUbfpYUToG1H9I6f0zOCY8+jN+YN5IxntyvRSeVp/VKwXq/260fgL7eKy3XWOuxWve2N7WxyNLctBPO8fbPKxT3BaGn6jCvjdXXDT7qXf+8ZFC8OLfoSuiraaXXXVC72W41lSzT+n4oWOoYZnRCrnlaH7pC0hzmtGAG5xnJIORjsYXdW/iY/Wh0f6Jkb6m2qn3Bmfmx+674zj6rkv2nr7b9Xzau0k+jlqKynbBcrfWOLI6jZ+SRj2gljwODkEOGO2OaDXNUacj09r7Q4t1ZV/hk11k20M0zpWQyimlw6MuJLRtBG0HHnGck7Ro6onk6j6ygkqJnxRCjMcbpCWMyJs7QeBnAzjvhdZWac1nfNV6cv92mtdLFbKt732+GVz2tYYXt9QP2/NJuc0beAG5OSeD9V3smqrTres1LpZltroLlSxw1tFWTPiLZI3OLJGOa12eHuBBA+6rewOOuq6iLrtBEKmo+HZpmolMAld6TnCeH5izOC4DjOM4J9yuq6faaptc6Zg1fq6etuFXd2fEw0/xMkcNFE7mNkbGkAODcZd3yTyu0s2lNSu6lDVl9qbfLDPZ5aKWnp3OHw7nSMc1rMt+du1rsvJBzj5cduO02XW2jaeS0acitF4swlc+ibWVD4JaVrjn0yWscHsBJweCBgY4Cj8gdk2gbpPQd0p9Q6wr5LdEJXR3Cd4bU0sBztZ6nd7m+Hn5jxntk+bahbY6DR9RfdM2zWNpuFJF8TSXaZszhUOGCPVDnHLHed4x/Jb5c9Gagv3T26WTUWomVN0r6gVUckcAEFI5rmvZExuAXRgsGS47jknjgD5dU2rqPqvTFfYauOw2ls0BjfNT1MsnxDv7Iywemw+T8xxxjykWsg1/rLQwXqwaU1A41PxVdXUcTo46h4YA/n5Wg4Dsnhw57Luuqdti0zo+zUtpq7lFG7UVIXOdXSvkcHPOWl5duLTj8pOPC7PV2jrndNA2i10VRSR3W0S09TD6uTBJJF/VdxnaefCmrbHqfV2l7VFWUttt9wpbvT1c0YqnPjMcbiTtdszuweAQB9UUlsD5b1T1OsuqFdpusr6qmsNko4J56amldEayabdtD3NIJY0MPy9icd18uobc3p5qCw3XT9XVw2mvr2W+vtb53SQn1OGTMDidjmuABx3B57LvdTacvkGrm6v0nVUgrZKcUtfQ1mWw1cTTlhD2glj2knBwQQSOO6+Nmn9U6m1Ja7pq38OoLbaZviaW20crpjLUbS1skj3NbjaCcNA7nOUT+gOl05a5dR9Stc2663O4TWilq4SKEVLmRvc5nnBBDQB+UfKTyeQF9+i4TpvqvddJ26oqnWeSgirIqaeV8opn5IcGE52tPHBPfOF3Oi9M3O0a01Veq6WlfBd6lslMI3kvaxoxh4IAB/QlcsOnblF1Vn1Q2am/D57a2kczcfV3B2e2MY7efsjkgbaiLE91gUyRQFVYg41kOyxWQ7KgKlRFQah1Am/fUtODkbS9w/kP+P8AvO9S6YptQNywejcD8sczf63sHe633XwP4tAcd4Bj/M5dLa3sjudJI9wDGzMc4nsADyvhmuXVZa9VmpcL4ks+Wy9jetKqytrWFSk8NJv3PQdNWilsVho7TRtAipogzOPzHy4/UnJ+67FY7uMhZBfcVFRWEaRUqSqTc5vLe7PP7x1Wsdru1XbJ7bdHT0spieWMZtJHsS5fJ/tk0//AO1Xf/JF/wBa8j15NHDri9RySxtcKyTguHvldI6rph3ni/zhfTLbwvYzownKLy0nzfVGlVdauI1JR4ls30R7t/tm0/n/AMKu/wDkj/612mlOplk1FfIbPTUVxgqJmOcx00bQ07RkjIcecA/wX55bI17dzXgg9iDwVtfSDLup1jAGcOnJOPHw8n/Ncd94asKVtUqRi04xk1u+aTZnb6vdTqwi3lNpcl1eD9JZTOUwovnBt4wid15Ne+t1BbL9W2dumLnVzUkzonOhkYd208kDvhZKLfIh6yqCvKLL1y03U17KS8W25WQSHAmqWAxt+riOWjPnGB3JA5XqrXNe0OY4OaRkEHIIRxa5gz4Q4wplMqFJ5XU6r07aNUWd9qvVKKinc5r24Ja+N7SHNexw5a4EAgjkELtvOVHOa1pc4gNAySfAQGkP6dQVz4YtQakvl9oIHtkjoauWIREtOW+p6cbXSAezyQTyclbw3DQABgDgAeF89DW0ddEZaKqgqYw7aXxSB4B74yPPIX0KtsFymVEUAKIiAIiIAiIgCIiAo7JlAeMKIBkoeQiIArlRFiDJQlREARECAoVUymUBVie6uVFQMKoD4TKgMFkOyxKyHZUBERAar1Ejayhhr5HtZHCSHucQA0EZJJ9uF4nqTVctUXUdnkdDTkfvKrBDn/RgPYf3u58Y8/ou826lu9qqbZWtLqepjMcgacEA+QfBHcHwV+YNU2Ou03eprRXt+eMkxShuGzx5wHt/4jwePYnUb7w7az1CV9VXFxY2fJNLGWuvz28mzzdd1m+t7SNtRfDB5zJc/hnon3W/muvv3S7VUOqNOsdJK38SpA2KsjJ+bdjh+P7Lu4P6juCBtZX5Os9xr7Pc47lbKqSlq4hgSN8t8tcOzhwMg/64I9WsHWaP0Wx36zzeqG8zUTmua8/4HEFv8Stjo3SaxPmeZp2vUnBQuHhrr0f4fp7HqppKV7i51NC4nyWBfNczabZb57hXR00FNTsMksjmDDWhaHWdZbAyImjtd0qJfAe1kbfuS4n+RXmet9bXvVmIa4x09A129lHATtJ8F5P5z/AZ5x2Xetrq3lWjGtU4YZ3e7wv79Ob2Ozda1a0o/wAf7penzfb4ZZ0t4rvxS9XC6mAQCrqXzNiAA2NJw0YHGQ0DP1yfK3j9n+3Gq1rU3IszHQUjmh3tJK4AY/RrH5/xBed5c5zGxsfJI8hsbGDLnuPAaB5JK/SXSzTDtLaWjpqlrPj6l5nqy05Aeezc+doAb9l9M1+/pW+ncFN/5rEcbrHV56rG3zR42k28q90pPdR3fx6eu/yNtBQrHBTBXzA3UoXhXSVjX9ddYNc1rhl+QQDxvOf57f5L3UL8zWjSMesesGqLfJdKq3NgnkkElMBvcS78pJ7Dg/yXLDkzFnpn7Rcdih6cVBrY6Vlb6sfwPAEnqbhnb5Pybs/RNIaspdH9ELDeNRCqLRTtjjZHGXPeC4+mOcADbjkkDGPoF8to6GaYgr46u8XC53sR9oKqRvpO+jgBlw/uk7T5BC7zq/rSm0Xp+Bkdtir6usf6NLSvH7oADlzhjsOBgDkkdk2worcpr8nWOvp6UXKt6e3yntONxqy4cN8OIIAA/UgfVehaf1HbL9ptl/tUj56V8bnbSNr2ludzHDw4EEf8xyvPviOtk1vfVVln0zU080ZMlukJD9pH5TzjOPG4rrP2a3A9MNRBri6NtY/YT7GliKrisZQO6PXDTTrOKuG23SStkqHQQUDWMdNJhoJfhrjhnIGe5OcA4OOwu+v5G9O4L7Npe8F9eZKd1LFFukp/ked784w35e+PIWq/stWqifbr5e3wsdW/HGkbI4AlkYYx5A9sl/Pvgey9gvQxZa/HH+7S9v8ACVJKKeAtzwDoJrVmm7RJZW6eutx+LuLHfEUUO+OLeGM+fttxjJ+i9T1Z1OsGl9Wmw3iKpha2j+KdVhodHjDyGAA7i47CAAOSQtZ/ZU/8iXLOObm7/wCqNddrChprl+1BZaWsjbLTto4pixwyHOYJ3Nz/APIA/b7rJpOTyRcjsqnrb8HLFPcND32ktsrsMqJQGvcMZ4aQGk4zxuXqNJdbfVWWO9Q1UbrfJAKhs54b6e3du58Y5WudaIIqjpZqITsDxHRPmZnw9nzNP2IBXmVfVVMH7LdOY5ZA17oYZMc5jdI0Fv6HOMfZY4UuRTaHdY/xCom/opo2832kgftkqWYjaT34GCe2Dg4P0WzdPeoFn1kammpoaqguVJ/3iiqmhr284yMdxkEeCPIHC0LQDurFBou0waesmlzbHUzZIHvmIfI1/wA29+HY3HOT9Vy6d0r1Ed1YpdYXe22ajBZ6NZ8HUDD2HyW8ku7c5/qj2VcYg2W9dWtO2W/3qz3KnrYprWGbdrWuNW9waQyIZyXfOO+PPK7Lp1rGu1Y+vNVpe4WSKm2ek+rzmbdnsC0YwAPfv9F5/pa301w/aa1HNVRslNC0Swh4yGvMUTQ4Z8gZ/iV7hnnusZJILcIoU5WBSoohQFTKiKYBUURMAqmUUTAMkURMAvCLFVMAFUH3UUQGSKKg8JgBEyiAwWTeywyrlAZ5UyscqgpgFyul1hpe1aptvwdyiIew7oZ48CSF3u0/6g5B8hd0O6qkoqSwzjqU4VYuE1lM/OGqunmprBM9zKN1zogflqKRhc7H95ncH9Mj6rT3Sxh5jc9rXjILCcOH6g8r9fE/RfHWWq1VuPjLbR1OOAJYWvx/ELpys1/qzW6/hxOWaM8Ls9/X85PyY+aNmNz2Nz5cV2djsN8v0rGWm11FU154k2FkQ+u88Y/TK/TNNp3T9M8PprHbIHg5Do6RjSPuAuyYxjAQxrW55OBhYqzfWRx0vDUm/wCSpt5L7v8ADNA6adOafTe243Z0NdduSwhuY6bPhmeSccFx58DAzn0Hn3RTK70EoQUFyXL399zZLa2p21NU6awi5QqZRU7AyvL+n+ir9ZuqeodQ10VM2gr3EwFk2555d3bjjuF6gn3WSlghFoHWbQlRrG2Uk9qnjgu1DJvhMjiGyN/sk+CDgg48YPfjf0UTw8g8nEHWPUNGbJdW22x0kkZZU3CAh88jcchjQ7Ac7tn5e/BC+3o1o2+6V0VerVeIaZlTV1L5IWwTeo0tMDGDnAxy0/yXpaLJzzsMHnvQjSt50npy6UV7hiinqLk6ojEcokBYYo2gkj6tPC9AnjZNDJDIMskaWOHuCMFZIo3l5B4bpLSvVHQF1ltthgoLlZpqtkj5HvaC6MOAJGSCx5ZweCM9shbXc9IXuo6527V8cdP+FQUQhe4y/vA7EnZuO3zjnPuvR0WTm2MHRdQrXV3vQ16tFAI3VVZRSQwh7trS5zSBk+Auk0doxzelUej9SwxkvgMU4hk3bSezmux3BwQfBAW8IseJ4wDxazWTq/oendZrF+G3y2Mcfh3TuAMYJz2Lmlvn5ckDwth6Y6U1nTagrNUa0v0stVUs2R2+CYmFg45cPygjsA3tySSSvSEWTm2MHnemNI3q39ZNR6oqY6cWy4RsbTubLl5IYwHLccctK9ERFi3kFTKiKFKiiqAiqiKZBVERMgIiJkBERMgIiJkFRT7p90yAifdEyAiImQcZKBywyqCgM9yoPlYAj2VyEyDPcruXHuCb0ByE5U/isNyblCZM/wCKLDcm5Bk5Mqggri3JuQZOZY5WO5YkoU5Mplce5NyA5Mplce5NyA5EyuPcqXKgzymVx7gqXBMgzymVx7lQUyDPKZWGUymQZ5Uysc/RNyZBluTcVjkeym4JkHJlFxhwyruQGeUysM/RNyMGaZWG5NygM8plYZ+iZCAyJwFVhlTcgORFhuTcgM8osMpuQGaLEuU3IDMlTKx3JkIDMdkWGU3IDiCeURAEREAREQFCqIgCIiAIiIAoURAFERATJ91URAFR3REBT2WKIgKgREAKo7IiAh7qoiAiiIgCqIgCBEQAoiIAqOyIgIVERAVU9kRAQd1kERACoiICFREQGQ7KIiA//9k="
+                alt="Google for Education Partner"
+                style="
+                  height: 36px;
+                  object-fit: contain;
+                  margin-top: 8px;
+                  display: block;
+                  margin-left: auto;
+                "
+              />
+            </div>
+          </div>
+        </div>
+        <!-- /letter -->
+      </div>
+      <!-- /preview-panel -->
+    </div>
+    <!-- /app -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+      // Init date & ref
+      document.getElementById("f-date").value = new Date()
+        .toISOString()
+        .split("T")[0];
+      document.getElementById("l-ref").textContent = String(
+        Math.floor(Math.random() * 900) + 100,
+      );
+
+      // Drag & drop
+      const drop = document.getElementById("drop");
+      drop.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        drop.classList.add("over");
+      });
+      drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+      drop.addEventListener("drop", (e) => {
+        e.preventDefault();
+        drop.classList.remove("over");
+        const f = e.dataTransfer.files[0];
+        if (f && f.type === "application/pdf") loadPDF(f);
+      });
+      document.getElementById("pdfInput").addEventListener("change", (e) => {
+        if (e.target.files[0]) loadPDF(e.target.files[0]);
+      });
+
+      function showStatus(type, msg) {
+        const s = document.getElementById("status");
+        s.style.display = "flex";
+        s.className = "status " + type;
+        s.innerHTML =
+          (type === "loading"
+            ? '<div class="spin"></div>'
+            : type === "ok"
+              ? "✅"
+              : "❌") +
+          " " +
+          msg;
+      }
+      function badge(id) {
+        document.getElementById(id).style.display = "inline-block";
+      }
+
+      async function loadPDF(file) {
+        showStatus("loading", "Extracting certificate data…");
+        try {
+          const buf = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+          let txt = "";
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const pg = await pdf.getPage(i);
+            const ct = await pg.getTextContent();
+            txt += ct.items.map((x) => x.str).join(" ") + " ";
+          }
+          extractAndFill(txt);
+          showStatus("ok", "Fields extracted — review and hit Generate.");
+        } catch (err) {
+          showStatus(
+            "err",
+            "Could not read PDF. Please fill the form manually.",
+          );
+        }
+      }
+
+      function extractAndFill(txt) {
+        // Name — first word group before CERTIFICATE
+        const nm = txt.match(
+          /^([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*)\s+CERTIFICATE/,
+        );
+        if (nm) {
+          set("f-name", nm[1].trim());
+          badge("t-name");
+        }
+
+        // Company — after "From "
+        const co = txt.match(
+          /From\s+([\w\s,\.]+?(?:Pvt\.?\s*Ltd\.?|Ltd\.?|Inc\.?|LLC))/i,
+        );
+        if (co) {
+          set("f-co", co[1].trim());
+          badge("t-co");
+        }
+
+        // Dates DD/MM/YYYY to DD/MM/YYYY
+        const dt = txt.match(
+          /(\d{2}\/\d{2}\/\d{4})\s+to\s+(\d{2}\/\d{2}\/\d{4})/i,
+        );
+        if (dt) {
+          set("f-start", dt[1]);
+          set("f-end", dt[2]);
+          badge("t-s");
+          badge("t-e");
+        }
+
+        // Role — "as\n[Role]\nConducted" or "program as [Role]"
+const rl =
+  txt.match(/(?:position|role|worked as|internship as|program as)\s+([\w\s\-\/]+?)(?:\.|\n|Conducted from|\d{2}\/)/i) ||
+  txt.match(/([\w\s]+(?:Developer|Engineer|Designer|Analyst|internship))/i);
+
+if (rl) {
+  set("f-role", rl[1].trim());
+  badge("t-role");
+}
+
+        // HR — Dr./Mr./Ms. Name Surname
+        const hr = txt.match(
+          /(?:Dr|Mr|Ms|Mrs)\.?\s+([A-Z][a-z]+\s+[A-Z][a-zA-Z]+)/,
+        );
+        if (hr) {
+          set("f-hr", "Dr. " + hr[1].trim());
+          badge("t-hr");
+        }
+
+        // AICTE ID
+        const ai = txt.match(/AICTE\s+ID\s*[-–]\s*([\w]+)/i);
+        if (ai) {
+          set("f-aicte", ai[1].trim());
+          badge("t-aicte");
+        }
+
+        render();
+      }
+
+      function fmtDate(s) {
+        if (!s) return "—";
+        const m = s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (m) {
+          const mo = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+          return `${parseInt(m[1])} ${mo[parseInt(m[2]) - 1]} ${m[3]}`;
+        }
+        return s;
+      }
+      function set(id, v) {
+        const e = document.getElementById(id);
+        if (e) e.value = v;
+      }
+      function put(id, v) {
+        const e = document.getElementById(id);
+        if (e) e.textContent = v;
+      }
+
+      function render() {
+        const name = v("f-name") || "[ Intern Name ]";
+        const addr = v("f-addr");
+        const email = v("f-email");
+        const co = v("f-co") || "[ Company ]";
+        const role = v("f-role") || "[ Role ]";
+        const s = fmtDate(v("f-start"));
+        const e = fmtDate(v("f-end"));
+        const hrs = v("f-hours");
+        const mode = v("f-mode");
+        const notice = v("f-notice");
+        const hr = v("f-hr") || "[ Issuing Authority ]";
+        const desig = v("f-desig");
+        const aicte = v("f-aicte");
+        const rawDate = v("f-date");
+        const ofDate = rawDate
+          ? new Date(rawDate).toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })
+          : "—";
+        const domain = role.replace(/\s*intern$/i, "").trim() || "technology";
+
+        put("l-co", co);
+        put("l-co2", co);
+        put("l-co3", co);
+        put("l-co4", co);
+        put("l-co5", co);
+        put("l-co6", co);
+        put("l-name", name);
+        put("l-name2", name);
+        put("l-role-s", role);
+        put("l-role2", role);
+        put("l-role3", role);
+        put("l-s", s);
+        put("l-e", e);
+        put("l-hours", hrs);
+        put("l-mode", mode);
+        put("l-notice", notice);
+        put("l-notice2", notice);
+        put("l-hr-t", hr);
+        put("l-hr-s", hr);
+        put("l-desig-s", desig);
+        put("l-domain", domain);
+        put("l-aicte-f", aicte ? "ID: " + aicte : "");
+        put("l-aicte-h", aicte || "");
+        document.getElementById("l-date").textContent = "Date: " + ofDate;
+        const addrEl = document.getElementById("l-addr");
+        addrEl.textContent = addr;
+        addrEl.style.display = addr ? "" : "none";
+        const emailEl = document.getElementById("l-email");
+        emailEl.textContent = email;
+        emailEl.style.display = email ? "" : "none";
+      }
+
+      function v(id) {
+        const e = document.getElementById(id);
+        return e ? e.value.trim() : "";
+      }
+
+      function resetForm() {
+        [
+          "f-name",
+          "f-addr",
+          "f-email",
+          "f-co",
+          "f-co-addr",
+          "f-role",
+          "f-start",
+          "f-end",
+          "f-hr",
+          "f-aicte",
+        ].forEach((id) => {
+          const e = document.getElementById(id);
+          if (e) e.value = "";
+        });
+        document.getElementById("f-hours").value =
+          "Monday – Friday, 10:00 AM – 6:00 PM";
+        document.getElementById("f-desig").value = "Program Manager";
+        document.getElementById("f-mode").value = "Remote";
+        document.getElementById("f-notice").value = "7 days";
+        document.getElementById("f-date").value = new Date()
+          .toISOString()
+          .split("T")[0];
+        document
+          .querySelectorAll(".auto-tag")
+          .forEach((t) => (t.style.display = "none"));
+        document.getElementById("status").style.display = "none";
+        render();
+      }
+
+      // Live update
+      document
+        .querySelectorAll("input,textarea,select")
+        .forEach((el) => el.addEventListener("input", render));
+      render();
+    </script>
+  </body>
+</html>
