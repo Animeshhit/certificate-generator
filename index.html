@@ -1027,14 +1027,32 @@ if (rl) {
         const hr = v("f-hr") || "[ Issuing Authority ]";
         const desig = v("f-desig");
         const aicte = v("f-aicte");
-        const rawDate = v("f-date");
-        const ofDate = rawDate
-          ? new Date(rawDate).toLocaleDateString("en-IN", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })
-          : "—";
+       const rawDate = v("f-date");
+
+// Offer letter date = 2 days before internship start date
+let finalDate = rawDate;
+
+const startRaw = v("f-start");
+const startMatch = startRaw.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+
+if (startMatch) {
+  const startDate = new Date(
+    parseInt(startMatch[3]),
+    parseInt(startMatch[2]) - 1,
+    parseInt(startMatch[1]),
+  );
+
+  startDate.setDate(startDate.getDate() - 2);
+  finalDate = startDate;
+}
+
+const ofDate = finalDate
+  ? new Date(finalDate).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+  : "—";
         const domain = role.replace(/\s*intern$/i, "").trim() || "technology";
 
         put("l-co", co);
